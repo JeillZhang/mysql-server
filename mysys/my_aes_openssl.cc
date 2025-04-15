@@ -1,4 +1,4 @@
-/* Copyright (c) 2015, 2024, Oracle and/or its affiliates.
+/* Copyright (c) 2015, 2025, Oracle and/or its affiliates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2.0,
@@ -25,11 +25,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA */
   @file mysys/my_aes_openssl.cc
 */
 
-#include <assert.h>
 #include <openssl/aes.h>
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
+#include <cassert>
 
 #include "m_string.h"
 #include "my_aes.h"
@@ -156,8 +156,8 @@ int my_aes_encrypt(const unsigned char *source, uint32 source_length,
 #else  /* OPENSSL_VERSION_NUMBER < 0x10100000L */
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
 #endif /* OPENSSL_VERSION_NUMBER < 0x10100000L */
-  int rc = my_aes_encrypt(ctx, source, source_length, dest, key, key_length,
-                          mode, iv, padding, kdf_options);
+  int const rc = my_aes_encrypt(ctx, source, source_length, dest, key,
+                                key_length, mode, iv, padding, kdf_options);
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
   EVP_CIPHER_CTX_cleanup(ctx);
@@ -209,8 +209,8 @@ int my_aes_decrypt(const unsigned char *source, uint32 source_length,
   EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
 #endif /* OPENSSL_VERSION_NUMBER < 0x10100000L */
 
-  int rc = my_aes_decrypt(ctx, source, source_length, dest, key, key_length,
-                          mode, iv, padding, kdf_options);
+  int const rc = my_aes_decrypt(ctx, source, source_length, dest, key,
+                                key_length, mode, iv, padding, kdf_options);
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
   EVP_CIPHER_CTX_cleanup(ctx);
@@ -268,5 +268,5 @@ bool my_aes_needs_iv(my_aes_opmode opmode) {
   int iv_length;
   iv_length = EVP_CIPHER_iv_length(cipher);
   assert(iv_length == 0 || iv_length == MY_AES_IV_SIZE);
-  return iv_length != 0 ? true : false;
+  return iv_length != 0;
 }

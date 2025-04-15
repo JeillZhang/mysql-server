@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, 2024, Oracle and/or its affiliates.
+/* Copyright (c) 2023, 2025, Oracle and/or its affiliates.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2.0,
@@ -295,15 +295,14 @@ void Protocol_local_v2::start_row() {
     /* Reuse row. */
     Row<value_t> *row = (*m_data_rows)[m_current_row_index];
     m_current_row = row->get_column_array();
-    memset((void *)m_current_row, 0, sizeof(value_t) * m_column_count);
-    m_current_column = m_current_row;
-
   } else {
     /* Start a new row. */
     m_current_row = static_cast<value_t *>(
         m_result_set_mem_root.Alloc(sizeof(value_t) * m_column_count));
-    m_current_column = m_current_row;
   }
+
+  memset((void *)m_current_row, 0, sizeof(value_t) * m_column_count);
+  m_current_column = m_current_row;
 
   m_current_row_index++;
 }
